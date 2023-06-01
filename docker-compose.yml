@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   postgres:
-    container_name: nestjs-typeorm-basic-migration
+    container_name: nestjs-auth-postgres-typeorm
     image: postgres:14.2
     hostname: ${DB_HOST_NAME}
     ports:

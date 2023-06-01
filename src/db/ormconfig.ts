@@ -4,6 +4,11 @@ import {config} from "dotenv";
 //import { User } from "src/users/entities/user.entity";
 import { User } from "../users/entities/user.entity";
 import { DataSource, DataSourceOptions } from "typeorm";
+import { CreatedMigration1685382494385 } from "./migrations/1685382494385-created_migration";
+import { GeneratedMigration1685382819168 } from "./migrations/1685382819168-generated_migration";
+import { SeedRoles1565812987671 } from "./migrations/1685125258893-seed_roles";
+import { Role } from "../roles/entities/role.entity";
+import { GeneratedMigration1685444444960 } from "./migrations/1685444444960-generated_migration";
 
 config();
 const configService = new ConfigService();
@@ -19,10 +24,15 @@ export const dataSourceOptions: DataSourceOptions = {
   synchronize: false,
   migrationsTableName: 'migrations',
   entities: [
-      'dist/**/entities/*.entity.js'
+      User, Role
+      //'dist/**/entities/*.entity{.ts,.js}'
   ],
   migrations: [
-      'dist/db/migrations/*.js'   
+    CreatedMigration1685382494385,
+    GeneratedMigration1685382819168,
+    SeedRoles1565812987671,
+    GeneratedMigration1685444444960
+      //'dist/db/migrations/*.js'   
   ]   
 }
 

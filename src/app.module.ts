@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { dataSourceOptions } from './db/ormconfig';
 import { UsersModule } from './users/users.module';
+import { RolesModule } from './roles/roles.module';
+
 
 
 @Module({
@@ -16,6 +18,7 @@ import { UsersModule } from './users/users.module';
       }), 
     }),
     UsersModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
