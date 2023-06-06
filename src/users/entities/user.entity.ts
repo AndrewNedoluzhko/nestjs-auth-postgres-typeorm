@@ -11,28 +11,32 @@ export class User extends BaseEntity {
   @Column({ type: 'varchar', length: 255, nullable: false, unique: true })
   email: string;
 
-  @Column({ name: 'phone_number', type: 'varchar', length: 14, nullable: false })
+  @Column({ type: 'varchar', length: 14, nullable: false })
   phoneNumber: string;
 
   @Column({ type: 'varchar', select: false, nullable: false })
-  password: string;
+  password?: string;
 
   @Column({ type: 'varchar', length: 120, nullable: false })
-  firstName: string;
+  firstname: string;
 
   @Column({ type: 'varchar', length: 120, nullable: false })
-  lastName: string;
+  lastname: string;
 
   @Column({type: 'varchar', select: false, nullable: true })
-  refreshToken?:string;
+  refreshToken?:string | null;
 
   //user role by default
   @Column({default: 1})
   roleId: number;
 
-  @ManyToOne(()=> Role, (role)=> role.users)
-  @JoinColumn()
-  role: Role
+  @ManyToOne(()=> Role, (role)=> role.users)  
+  role!: Role
+
+/*   @ManyToOne(() => User, (manager) => manager.managerToCustomers, {
+    cascade: true,
+  })
+  manager!: User; */
 
   @BeforeInsert()
   @BeforeUpdate()
