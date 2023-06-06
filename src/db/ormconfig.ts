@@ -8,7 +8,7 @@ import { CreatedMigration1685382494385 } from "./migrations/1685382494385-create
 import { GeneratedMigration1685382819168 } from "./migrations/1685382819168-generated_migration";
 import { SeedRoles1565812987671 } from "./migrations/1685125258893-seed_roles";
 import { Role } from "../roles/entities/role.entity";
-import { GeneratedMigration1685444444960 } from "./migrations/1685444444960-generated_migration";
+import { GeneratedMigration1685795112108 } from "./migrations/1685795112108-generated_migration";
 
 config();
 const configService = new ConfigService();
@@ -20,8 +20,8 @@ export const dataSourceOptions: DataSourceOptions = {
   username: configService.get('DB_USER_NAME'),
   password: configService.get('DB_USER_PASSWORD'),
   database: configService.get('DB_NAME'),
- logging: true,
-  synchronize: false,
+  logging: true,
+  synchronize: true,
   migrationsTableName: 'migrations',
   entities: [
       User, Role
@@ -31,7 +31,7 @@ export const dataSourceOptions: DataSourceOptions = {
     CreatedMigration1685382494385,
     GeneratedMigration1685382819168,
     SeedRoles1565812987671,
-    GeneratedMigration1685444444960
+    GeneratedMigration1685795112108
       //'dist/db/migrations/*.js'   
   ]   
 }
