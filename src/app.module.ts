@@ -10,17 +10,17 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal: true}),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
-      useFactory: () =>({
+      useFactory: () => ({
         ...dataSourceOptions, autoLoadEntities: true
-      }), 
+      }),
     }),
     UsersModule,
-    RolesModule,   
+    RolesModule,
     AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
