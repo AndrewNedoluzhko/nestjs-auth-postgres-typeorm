@@ -9,76 +9,68 @@ import { UsersService } from '../users/users.service';
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private readonly usersService: UsersService    
-  ){}
+    private readonly usersService: UsersService
+  ) { }
 
-  async register(createUserDto: CreateUserDto){
-    console.log(`AuthService.register before usersService.create`);
-    return await  this.usersService.create(createUserDto);
+  async register(createUserDto: CreateUserDto) {
+    return await this.usersService.create(createUserDto);
   }
 
-  async login(email: string, password: string){
+  async login(email: string, password: string) {
     const user = await this.usersService.findOneByEmail(email);
-    if (await user.veryfyPassword(password)){
+    if (await user.veryfyPassword(password)) {
       delete user.password;
       delete user.refreshToken;
-      return  user ;
+      return user;
     } else {
       throw new UnauthorizedException('Password missmatched')
     }
   }
 
-  signToken(user: User, options: any){
-    const payload = {sub: user.id, email: user.email};
+  signToken(user: User, options: any) {
+    const payload = { sub: user.id, email: user.email };
     return this.jwtService.sign(payload, options);
   }
 
-  async verify(email:string): Promise<User>{
-    if (!email){
+  async verify(email: string): Promise<User> {
+    if (!email) {
       throw new UnauthorizedException();
     }
     const user = await this.usersService.findOneByEmail(email);
-    if(!user){
+    if (!user) {
       throw new UnauthorizedException();
     }
     delete user.password;
     delete user.refreshToken;
-
     return user;
   }
 
-  async verifyRefreshToken(email: string, refreshToken: string): Promise<User>{
-    if (!email){
+  async verifyRefreshToken(email: string, refreshToken: string): Promise<User> {
+    if (!email) {
       throw new UnauthorizedException();
     }
-    if(!refreshToken){
+    if (!refreshToken) {
       throw new UnauthorizedException("Refresh token expired!");
     }
     const user = await this.usersService.findOneByEmail(email);
-    if(!user){
+    if (!user) {
       throw new UnauthorizedException("User not found");
     }
 
-    if (await user.verifyRefreshToken(refreshToken)){
+    if (await user.verifyRefreshToken(refreshToken)) {
       delete user.password;
       delete user.refreshToken;
-
       return user;
-    }else {
+    } else {
       throw new UnauthorizedException('Refresh Token mismatched')
     }
   }
 
-  async setCurrentRefreshToken(id: number, refreshToken: string){
+  async setCurrentRefreshToken(id: number, refreshToken: string) {
     await this.usersService.setCurrentRefreshToken(id, refreshToken);
   }
 
-  async removeCurrentRefreshToken(id: number){
+  async removeCurrentRefreshToken(id: number) {
     await this.usersService.removeCurrentRefreshToken(id);
   }
-
-
-
-
-
 }

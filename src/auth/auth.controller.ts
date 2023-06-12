@@ -1,44 +1,59 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { TokenInterceptor } from './interceptors/token.interceptor';
+import { AccessTokenInterceptor } from './interceptors/access-token.interceptor';
 import { CurrentUser } from './current-user.decorator';
 import { User } from 'src/users/entities/user.entity';
-import { LocalAuthGuard } from './guards/local/local-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RefreshTokenInterceptor } from './interceptors/refresh-token.interceptor';
+import { JwtRefreshAccessTokenGuard } from './guards/jwt-refresh-access-token.guard';
+import { ClearCookiesInterceptor } from './interceptors/clear-cookies.interceptor';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
 
   @Post('register')
-  @UseInterceptors(TokenInterceptor)
-  async register(@Body() createUserDto: CreateUserDto){
-    console.log(`AuthController.register before AuthService.register`);
+  @UseInterceptors(AccessTokenInterceptor, RefreshTokenInterceptor)
+  async register(@Body() createUserDto: CreateUserDto) {
     return await this.authService.register(createUserDto)
   }
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(TokenInterceptor)
+  @UseInterceptors(AccessTokenInterceptor, RefreshTokenInterceptor)
   async login(
     @CurrentUser() user: User
-  ){
+  ) {
     return user;
   }
- /*
-  refreshToken(){
 
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@CurrentUser() user: User) {
+    return user;
   }
 
-  profile(){
-
+  @Post('refresh')
+  @UseGuards( JwtRefreshAccessTokenGuard)
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(AccessTokenInterceptor)
+  async refreshAccessToken(@CurrentUser() user: User) {
+    return user;
   }
 
-  logout(){
-
+  @Get('logout')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(ClearCookiesInterceptor)
+  async logout(@CurrentUser() user: User) {
+    if (user) {
+      this.authService.removeCurrentRefreshToken(user.id);
+    }
+    return { succes: true };
   }
- */
 }
