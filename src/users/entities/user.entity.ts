@@ -30,13 +30,12 @@ export class User extends BaseEntity {
   @Column({default: 1})
   roleId: number;
 
-  @ManyToOne(()=> Role, (role)=> role.users)  
+  @ManyToOne((type)=> Role, (role)=> role.users, {
+    eager: true
+  }  )  
+  @JoinColumn()
   role!: Role
 
-/*   @ManyToOne(() => User, (manager) => manager.managerToCustomers, {
-    cascade: true,
-  })
-  manager!: User; */
 
   @BeforeInsert()
   @BeforeUpdate()

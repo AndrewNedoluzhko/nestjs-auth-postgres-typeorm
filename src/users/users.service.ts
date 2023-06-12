@@ -1,32 +1,27 @@
 import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
+import { CreateUserDto } from './dto/create-user.dto';
+import { User } from './entities/user.entity';
 @Injectable()
 export class UsersService {
 
   constructor(
     @InjectRepository(User) private readonly repo: Repository<User>
-  ){}
+  ) { }
 
   async create(createUserDto: CreateUserDto) {
-    console.log(`UsersService.create before checkUserByEmail`);
-    const checkUserByEmail= await this.repo.findOne({
+    const checkUserByEmail = await this.repo.findOne({
       where: {
         email: createUserDto.email
       }
     });
-    console.log(`UsersService.create after checkUserByEmail`);
-    if (checkUserByEmail){
-      console.log(`UsersService.create  checkUserByEmail =true`);
-      throw new ConflictException('User with this email already exist');      
-    } else {
-      console.log(`UsersService.create before checkUserByEmail = false`);
-      const user= new User();
 
+    if (checkUserByEmail) {
+      throw new ConflictException('User with this email already exist');
+    } else {     
+      const user = new User();
       Object.assign(user, createUserDto);
       try {
         this.repo.create(user);
@@ -34,52 +29,54 @@ export class UsersService {
         delete user.password;
         return user;
       }
-      catch (error){
+      catch (error) {
         throw new BadRequestException(error.message);
       }
-
     }
   }
   async findOneByEmail(email: string) {
-    const user= await this.repo
+    const user = await this.repo
       .createQueryBuilder('user')
       .addSelect('user.password')
       .addSelect('user.refreshToken')
-      .where('user.email = :email', {email: email})
+      .leftJoinAndSelect('user.role', 'role')
+      .where('user.email = :email', { email: email })
       .withDeleted()
       .getOne();
-    
-    if (!user){ 
+
+    if (!user) {
       throw new HttpException(
         'User with this email not found',
         HttpStatus.NOT_FOUND
       )
     } else {
-     return user; 
-    }    
+      return user;
+    }
   }
-  
 
-  async setCurrentRefreshToken(id:number, refreshToken: string){
+  async setCurrentRefreshToken(id: number, refreshToken: string) {
     const currentUser = await this.repo
       .createQueryBuilder('user')
       .addSelect('user.refreshToken')
-      .where('user.id =:id', {id: id})
+      .where('user.id =:id', { id: id })
       .getOne();
 
-    if (currentUser){
-      currentUser.refreshToken=refreshToken;
+    if (currentUser) {
+      currentUser.refreshToken = refreshToken;
       await this.repo.save(currentUser);
     } else {
       throw new BadRequestException("User not found");
     }
-
   }
 
-  async removeCurrentRefreshToken(id: number){
-    return this.repo.update(id, {
+  async removeCurrentRefreshToken(id: number) {
+    return await this.repo.update(id, {
       refreshToken: null
-    })   
+    })
+  }
+
+  async findAll() {
+    return await this.repo.find();
   }
 
 
