@@ -24,7 +24,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Authentication NestJS project with role based access using JWT, Passport, bcrypt and cookies with PostgreSQL database and TypeORM 
 
 ## Installation
 
@@ -52,21 +52,4 @@ $ npm run start:prod
 $ npm run test
 ```
 
-## Migrations
 
-```bash
-# Create migration
-$ npm run migration:create
-
-# Generate migration
-$ npm run migration:generate
-
-# Run migration
-$ npm run migration:run
-
-# Revert last migration
-$ npm run migration:revert
-
-# Show migrations
-$ npm run migration:show
-```
