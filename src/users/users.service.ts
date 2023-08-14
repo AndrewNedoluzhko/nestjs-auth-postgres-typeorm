@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
+import { Role} from './../roles/entities/role.entity'
 @Injectable()
 export class UsersService {
 
@@ -12,6 +13,9 @@ export class UsersService {
   ) { }
 
   async create(createUserDto: CreateUserDto) {
+
+
+  
     const checkUserByEmail = await this.repo.findOne({
       where: {
         email: createUserDto.email
@@ -19,14 +23,24 @@ export class UsersService {
     });
 
     if (checkUserByEmail) {
-      throw new ConflictException('User with this email already exist');
+      throw new ConflictException('User with this email already exist.');
     } else {     
       const user = new User();
       Object.assign(user, createUserDto);
+      //if roleId not specified
+      //set role "User" by default
+      const role = new Role();
+      if (createUserDto.roleId=== undefined){     
+        role.id = 1;
+        role.name = 'User' ;      
+      }      
+      user.role= role;
+
       try {
-        this.repo.create(user);
+        this.repo.create(user);      
         await this.repo.save(user);
         delete user.password;
+        delete user.refreshToken;
         return user;
       }
       catch (error) {

@@ -21,6 +21,7 @@ export class RefreshTokenInterceptor implements NestInterceptor {
     next: CallHandler<User>): Observable<User> {
     return next.handle().pipe(
       map(user => {
+        console.log('register user!')
         const response = context.switchToHttp().getResponse<Response>();
         const refreshTokenExpiresIn = parse(this.configService.get('JWT_REFRESH_TOKEN_EXPIRES_IN'));
         const refreshTokenSecret = `${parse(this.configService.get('JWT_REFRESH_TOKEN_SECRET'))}`;

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, Length, MaxLength } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Length, MaxLength } from "class-validator";
 import { LoginUserDto } from "./login-user.dto";
 
 export class CreateUserDto extends LoginUserDto{
@@ -18,7 +18,8 @@ export class CreateUserDto extends LoginUserDto{
   @MaxLength(120) 
   lastname: string;
  
-  @IsNumber()
-  roleId:number;
+  @IsNumber({ maxDecimalPlaces: 0 })
+  @IsOptional()
+  roleId?:number;
 
 }

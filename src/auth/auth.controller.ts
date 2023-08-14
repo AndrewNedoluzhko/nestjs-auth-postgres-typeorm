@@ -54,6 +54,7 @@ export class AuthController {
     if (user) {
       this.authService.removeCurrentRefreshToken(user.id);
     }
+    console.log(`AuthController. logout`);
     return { succes: true };
   }
 }

@@ -28,12 +28,12 @@ export class User extends BaseEntity {
 
   //user role by default
   @Column({default: 1})
-  roleId: number;
+  roleId: number; 
 
   @ManyToOne((type)=> Role, (role)=> role.users, {
     eager: true
   }  )  
-  @JoinColumn()
+  @JoinColumn({ name: "roleId" })
   role!: Role
 
 
