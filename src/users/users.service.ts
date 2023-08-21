@@ -12,10 +12,7 @@ export class UsersService {
     @InjectRepository(User) private readonly repo: Repository<User>
   ) { }
 
-  async create(createUserDto: CreateUserDto) {
-
-
-  
+  async create(createUserDto: CreateUserDto) {  
     const checkUserByEmail = await this.repo.findOne({
       where: {
         email: createUserDto.email
@@ -92,8 +89,4 @@ export class UsersService {
   async findAll() {
     return await this.repo.find();
   }
-
-
-
-
 }

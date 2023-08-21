@@ -26,6 +26,9 @@
 
 Authentication NestJS project with role based access using JWT, Passport, bcrypt and cookies with PostgreSQL database and TypeORM 
 
+## Frontend Example 
+The source code of the frontend for this authentication example based on Angular hosted at this link https://github.com/AndrewNedoluzhko/angular-auth-example
+
 ## Installation
 
 ```bash
